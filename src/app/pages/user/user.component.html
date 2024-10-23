@@ -1,0 +1,263 @@
+<!-- Navbar -->
+<app-navbar></app-navbar>
+
+
+<!-- Body -->
+<div class="grid flex align-items-center justify-content-center mt-2 md:mt-5">
+    <div class="col-11">
+        <div class="grid flex justify-content-between align-items-center mb-3">
+            <h2>Mantenimiento de usuarios</h2>
+            <p-button (click)="openAddUserModal()" severity="contrast" size="small" label="Agregar usuario"
+                icon="pi pi-plus" />
+        </div>
+        <div class="grid flex mb-3">
+            <div class="col-5">
+                <input #search type="text" class="custom-input" placeholder="Buscar usuario..." (keyup)="onSearchByTerm(search.value)" />
+            </div>
+        </div>
+        <p-table styleClass="p-datatable-striped" [value]="users" [tableStyle]="{ 'min-width': '50rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th></th>
+                    <th class="text-center">Nombres</th>
+                    <th class="text-center">Apellidos</th>
+                    <th class="text-center">Num. Doc</th>
+                    <th class="text-center">Correo</th>
+                    <th class="text-center">Usuario</th>
+                    <th class="text-center">Rol</th>
+                    <th class="text-center">Sociedad</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+                <tr>
+                    <td>
+                        <p-button (click)="setUserForUpdate(user)" [rounded]="true" size="small" icon="pi pi-pencil" />
+                    </td>
+                    <td class="text-center">{{ user.firstname }}</td>
+                    <td class="text-center">{{ user.lastname }}</td>
+                    <td class="text-center">{{ user.numDoc }}</td>
+                    <td class="text-center">{{ user.email }}</td>
+                    <td class="text-center">{{ user.username }}</td>
+                    <td class="text-center">{{ user.role }}</td>
+                    <td class="text-center">{{ user.society }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <!-- <p-card [style]="{ 'max-height': '50vh', 'overflow': 'auto' }">
+        </p-card> -->
+        @if(withPaginator) {
+            <div class="flex align-items-center justify-content-center mt-3">
+                <span class="mx-1 text-color">Filas por página: </span>
+                <p-dropdown [options]="options" optionLabel="label" optionValue="value" [(ngModel)]="limit"
+                    (ngModelChange)="onLimitChange($event)" />
+                <p-paginator [first]="skip" [rows]="limit" [totalRecords]="count" (onPageChange)="onPageChange($event)"
+                    [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                    [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
+            </div>
+        }
+    </div>
+
+    <p-dialog header="Header" [(visible)]="visible" [modal]="true" [style]="{ width: '35rem' }">
+        <ng-template pTemplate="header">
+            <div class="inline-flex align-items-center justify-content-center gap-2">
+                <span class="font-bold white-space-nowrap">
+                    @if(isUpdateForm) {
+                        Actualizar usuario
+                    }@else {
+                        Registrar nuevo usuario
+                    }
+                </span>
+            </div>
+        </ng-template>
+        <form [formGroup]="addUserForm" (ngSubmit)="registerUser()">
+
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="firstname" class="font-semibold w-6rem">
+                        Nombre:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <input autocomplete="off" id="firstname" class="custom-input" type="text"
+                        formControlName="firstname">
+                        @if(addUserForm.get('firstname')?.invalid && addUserForm.get('firstname')?.touched) {
+                            <small class="text-red-500">{{ getErrorMessage('firstname') }}</small>
+                        }
+                </div>
+            </div>
+
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="lastname" class="font-semibold w-6rem">
+                        Apellidos:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <input autocomplete="off" id="lastname" class="custom-input" type="text" formControlName="lastname">
+                    @if(addUserForm.get('lastname')?.invalid && addUserForm.get('lastname')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('lastname') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="numDoc" class="font-semibold w-6rem">
+                        Nro. de documento:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <input (keypress)="validateFormat($event)" autocomplete="off" id="numDoc" class="custom-input"
+                        type="text" formControlName="numDoc">
+                    @if(addUserForm.get('numDoc')?.invalid && addUserForm.get('numDoc')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('numDoc') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="position" class="font-semibold w-6rem">
+                        Puesto:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <input autocomplete="off" id="position" class="custom-input" type="text" formControlName="position">
+                    @if(addUserForm.get('position')?.invalid && addUserForm.get('position')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('position') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="email" class="font-semibold w-6rem">
+                        Correo:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <input autocomplete="off" id="email" class="custom-input" type="email" formControlName="email">
+                    @if(addUserForm.get('email')?.invalid && addUserForm.get('email')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('email') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="username" class="font-semibold w-6rem">
+                        Usuario:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <input autocomplete="off" id="username" class="custom-input" type="text" formControlName="username">
+                    @if(addUserForm.get('username')?.invalid && addUserForm.get('username')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('username') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="society" class="font-semibold w-6rem">
+                        Sociedad:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <div class="custom-select-container">
+                        <select id="society" class="custom-select" formControlName="society">
+                            <option value="">Seleccione sociedad</option>
+                            @for (society of societies; track society) {
+                            <option [value]="society.code">{{ society.name }}</option>
+                            }
+                        </select>
+                    </div>
+                    @if(addUserForm.get('society')?.invalid && addUserForm.get('society')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('society') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="area" class="font-semibold w-6rem">
+                        Área:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <div class="custom-select-container">
+                        <select id="area" class="custom-select" formControlName="area">
+                            <option value="">Seleccione área</option>
+                            @for (area of areas; track area) {
+                            <option [value]="area._id">{{ area.label }}</option>
+                            }
+                        </select>
+                    </div>
+                    @if(addUserForm.get('area')?.invalid && addUserForm.get('area')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('area') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="area" class="font-semibold w-6rem">
+                        Rol:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <div class="custom-select-container">
+                        <select (change)="onRoleChange()" id="area" class="custom-select" formControlName="role">
+                            <option value="">Seleccione rol</option>
+                            @for (role of roles; track role) {
+                            <option [value]="role.code">{{ role.name }}</option>
+                            }
+                        </select>
+                    </div>
+                    @if(addUserForm.get('role')?.invalid && addUserForm.get('role')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('role') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div [ngClass]="{'hidden': !isApproverDropdownActive }" class="col-3">
+                    <label for="approver" class="font-semibold w-6rem">
+                        Aprobardor:
+                    </label>
+                </div>
+                <div [ngClass]="{'hidden': !isApproverDropdownActive }" class="col-9">
+                    <div class="custom-select-container">
+                        <select id="approver" class="custom-select" formControlName="approver">
+                            <option value="">Seleccione aprobador</option>
+                            @for (approver of maybeApprovers; track approver) {
+                            <option [value]="approver._id">{{ approver.lastname }}, {{ approver.firstname }}</option>
+                            }
+                        </select>
+                    </div>
+                    @if(addUserForm.get('approver')?.invalid && addUserForm.get('approver')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('approver') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="grid flex justify-content-center align-items-center ap-3 mb-3">
+                <div class="col-3">
+                    <label for="competencyLevel" class="font-semibold w-6rem">
+                        Nivel de competencia:
+                    </label>
+                </div>
+                <div class="col-9">
+                    <div class="custom-select-container">
+                        <select id="competencyLevel" class="custom-select" formControlName="competencyLevel">
+                            <option value="">Seleccione nivel</option>
+                            @for (level of levels; track level) {
+                            <option [value]="level.level">{{ level.label }}</option>
+                            }
+                        </select>
+                    </div>
+                    @if(addUserForm.get('competencyLevel')?.invalid && addUserForm.get('competencyLevel')?.touched) {
+                        <small class="text-red-500">{{ getErrorMessage('competencyLevel') }}</small>
+                    }
+                </div>
+            </div>
+            <div class="flex justify-content-end align-items-center mt-3">
+                <p-button label="Limpiar" severity="secondary" (onClick)="clearForm()" />
+                <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="visible = false" />
+                <p-button type="submit" label="Guardar" [outlined]="true" severity="secondary" />
+            </div>
+        </form>
+    </p-dialog>
+    <p-toast />
+</div>

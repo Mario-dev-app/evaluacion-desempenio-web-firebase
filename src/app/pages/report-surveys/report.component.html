@@ -1,0 +1,119 @@
+<app-navbar></app-navbar>
+
+<div class="grid flex justify-content-center align-items-center mt-5">
+    <div class="col-11">
+        <div class="grid">
+            <div class="col-3">
+                <p-menu [model]="items" />
+            </div>
+            <div class="col-9">
+                <div class="grid flex justify-content-center">
+                    <div class="flex justify-content-center gap-3">
+                        <div class="flex align-items-center">
+                            <p-radioButton 
+                                name="filtro" 
+                                value="MP" 
+                                [(ngModel)]="filter" 
+                                inputId="filtro1" />
+                            <label for="filtro1" class="ml-2">
+                                MP
+                            </label>
+                        </div>
+                        
+                        <div class="flex align-items-center">
+                            <p-radioButton 
+                                name="filtro" 
+                                value="SP" 
+                                [(ngModel)]="filter" 
+                                inputId="filtro2" />
+                            <label for="filtro2" class="ml-2">
+                                SP
+                            </label>
+                        </div>
+                        
+                        <div class="flex align-items-center">
+                            <p-radioButton 
+                                name="filtro" 
+                                value="SUF" 
+                                [(ngModel)]="filter" 
+                                inputId="filtro3" />
+                            <label for="filtro3" class="ml-2">
+                                SUF
+                            </label>
+                        </div>
+                        
+                        <div class="flex align-items-center">
+                            <p-radioButton 
+                                name="filtro" 
+                                value="RM" 
+                                [(ngModel)]="filter" 
+                                inputId="filtro4" />
+                            <label for="filtro4" class="ml-2">
+                                RM
+                            </label>
+                        </div>
+
+                        <!-- <div class="flex align-items-center">
+                            <p-radioButton 
+                                name="filtro" 
+                                value="ALL" 
+                                [(ngModel)]="filter" 
+                                inputId="filtro5" />
+                            <label for="filtro5" class="ml-2">
+                                Todos
+                            </label>
+                        </div> -->
+                    </div>
+
+                    <p-button [disabled]="!isSearchButtonActive" (click)="searchByFilter()" [rounded]="true" [outlined]="true" size="small" icon="pi pi-search" class="ml-4"  />
+                </div>
+
+                <div class="grid flex justify-content-end align-items-center mb-4">
+                    <p-button [disabled]="surveys === undefined || surveys.length === 0" (click)="downloadExcelReport()" severity="success" size="small" label="Descargar" icon="pi pi-file-excel" />
+                </div>
+
+                
+
+                <div class="grid flex justify-content-center">
+                    <div class="col-12" [style]="{ 'max-height' : '80vh', 'overflow' : 'auto' }">
+                        <p-table styleClass="p-datatable-striped mt-5" [value]="surveys" [tableStyle]="{ 'min-width': '50rem'}">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="text-center">Evaluador</th>
+                                    <th class="text-center">Evaluado</th>
+                                    <th class="text-center">Año</th>
+                                    <th class="text-center">Sociedad</th>
+                                    <th class="text-center">Objetivos</th>
+                                    <th class="text-center">Competencias</th>
+                                    <th class="text-center">Comentarios</th>
+                                    <th class="text-center">Fecha de registro</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-survey>
+                                <tr>
+                                    <td class="text-center">{{ survey.userEvaluator.firstname }} {{ survey.userEvaluator.lastname }}</td>
+                                    <td class="text-center">{{ survey.userEvaluated.firstname }} {{ survey.userEvaluated.lastname }}</td>
+                                    <td class="text-center">{{ survey.period.year }}</td>
+                                    <td class="text-center">{{ survey.period.society }}</td>
+                                    <td class="text-center">
+                                        @for (competency of survey.competencies; track competency) {
+                                            - {{ competency.description }}. ({{ competency.value }}) <br/>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @for (goal of survey.goals; track goal) {
+                                            - {{ goal.description }}. ({{ goal.value }}) <br/>
+                                        }
+                                    </td>
+                                    <td class="text-center">{{ survey.comentaries }}</td>
+                                    <td class="text-center">{{ survey.regDate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-toast />
+</div>

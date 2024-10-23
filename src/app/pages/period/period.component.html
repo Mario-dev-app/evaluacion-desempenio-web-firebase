@@ -1,0 +1,96 @@
+<app-navbar></app-navbar>
+
+
+<div class="grid flex justify-content-center align-items-center mt-2 md:mt-5">
+    <div class="col-11">
+        <div class="flex justify-content-start">
+            <h2>Mantenimiento de periodos</h2>
+        </div>
+        <div class="grid">
+            <div class="col-4">
+                <p-card>
+                    <div class="flex justify-content-end align-items-center">
+                        <p-checkbox [(ngModel)]="customFormChecked" [binary]="true" inputId="customForm"
+                            (change)="onCustomCheckChange()" />
+                        <label for="customForm" class="ml-2">Personalizada</label>
+                    </div>
+                    <div class="flex flex-column gap-2">
+                        <label for="year">Año:</label>
+                        <div class="custom-select-container">
+                            <select [(ngModel)]="year" [disabled]="isSelectDisabled" id="year" class="custom-select">
+                                @for (year of years; track year) {
+                                <option [value]="year">{{ year }}</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex flex-column gap-2 mt-3">
+                        <label for="society">Sociedad:</label>
+                        <div class="custom-select-container">
+                            <select [(ngModel)]="society" id="society" class="custom-select">
+                                @for (society of societies; track society) {
+                                <option [value]="society.code">{{ society.name }}</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-content-end mt-3">
+                        <p-button (click)="createPeriod()" severity="contrast" size="small" label="Grabar" icon="pi pi-save" />
+                    </div>
+                    <!-- <form action="">
+                    </form> -->
+                    @if(loading) {
+                    <p-progressBar class="m-3" mode="indeterminate" [style]="{'height': '6px'}" />
+                    }
+                </p-card>
+            </div>
+            <div class="col-8">
+                <p-table styleClass="p-datatable-striped" [value]="periods" [tableStyle]="{ 'min-width': '50rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="text-center">Año</th>
+                            <th class="text-center">Sociedad</th>
+                            <th class="text-center">Activo</th>
+                            <th class="text-center">Encuesta</th>
+                            <th class="text-center">Resultados</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-period>
+                        <tr>
+                            <td class="text-center">{{ period.year }}</td>
+                            <td class="text-center">{{ period.society }}</td>
+                            <td class="text-center">
+                                <p-inputSwitch [(ngModel)]="period.active"
+                                    (onChange)="onChangeActiveSwitch(period._id, period.active)" />
+                            </td>
+                            <td class="text-center">
+                                <p-inputSwitch [(ngModel)]="period.surveyActive"
+                                    (onChange)="onChangeSurveySwitch(period._id, period.surveyActive)" />
+                            </td>
+                            <td class="text-center">
+                                <p-inputSwitch [(ngModel)]="period.resultsActive"
+                                    (onChange)="onChangeResultsSwitch(period._id, period.resultsActive)" />
+                            </td>
+                            <td>
+                                <p-button (click)="deletePeriod(period._id)" [rounded]="true" severity="danger" size="small" icon="pi pi-trash" />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <!-- <p-card [style]="{'max-height' : '53vh', 'overflow': 'auto'}">
+                </p-card> -->
+                <div class="flex align-items-center justify-content-center mt-3">
+                    <span class="mx-1 text-color">Filas por página: </span>
+                    <p-dropdown [options]="options" optionLabel="label" optionValue="value" [(ngModel)]="limit"
+                        (ngModelChange)="onLimitChange($event)" />
+                    <p-paginator [first]="skip" [rows]="limit" [totalRecords]="count" (onPageChange)="onPageChange($event)"
+                        [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                        [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-confirmDialog />
+    <p-toast />
+</div>

@@ -1,0 +1,6 @@
+#fondo-login {
+    height: 100vh;
+    background-image: url('../../../../public/fondo.jpg');
+    background-position: center;
+    background-size: cover;
+}

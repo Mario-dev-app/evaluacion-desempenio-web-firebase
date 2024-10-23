@@ -1,0 +1,93 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Contenedor general */
+.custom-select-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Estilos generales para el select */
+.custom-select {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    appearance: none; /* Elimina la flecha nativa */
+    -webkit-appearance: none; /* Para Safari */
+    -moz-appearance: none; /* Para Firefox */
+    position: relative;
+    z-index: 1;
+}
+
+/* Añade una flecha personalizada */
+.custom-select-container::after {
+    content: '\25BC'; /* Unicode de la flecha */
+    font-size: 0.8rem;
+    color: #495057;
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    pointer-events: none;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+/* Efecto en foco */
+.custom-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Para un estado deshabilitado */
+.custom-select:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+    border-color: #ced4da;
+}
+
+
+.custom-input {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.custom-input:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.custom-input:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.custom-input:invalid {
+    border-color: #dc3545;
+    box-shadow: none;
+}
+
+.custom-input::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
